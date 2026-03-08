@@ -8,15 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check webhook
-        run: |
-          if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
-            echo "DISCORD_WEBHOOK is empty"
-            exit 1
-          fi
-          echo "Webhook secret exists"
-
-      - name: Send test message to Discord
+      - name: Send message to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
