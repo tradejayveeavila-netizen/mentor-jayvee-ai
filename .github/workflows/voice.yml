@@ -17,12 +17,26 @@ jobs:
           echo "Webhook secret exists"
 
       - name: Send test message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
-            -H "Content-Type: application/json" \
-            -d '{"content":"Test message from GitHub Actions ✅"}' \
-            "${{ secrets.DISCORD_WEBHOOK }}")
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
 
-          echo "HTTP_STATUS=$RESPONSE"
-          echo "Response body:"
-          cat response.txt
+          webhook = os.environ["DISCORD_WEBHOOK"]
+          payload = {
+              "content": "📢 **Mentor Jayvee AI Voice of the Day**\n\nProtect capital first. Hindi kailangan laging may trade.\nWait for confirmation candles before entering."
+          }
+
+          data = json.dumps(payload).encode("utf-8")
+          req = urllib.request.Request(
+              webhook,
+              data=data,
+              headers={"Content-Type": "application/json"}
+          )
+
+          with urllib.request.urlopen(req) as resp:
+              print("HTTP_STATUS=", resp.status)
+          PY
