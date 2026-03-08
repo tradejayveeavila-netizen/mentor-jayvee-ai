@@ -1,0 +1,22 @@
+name: Mentor Jayvee AI Voice
+
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
+
+jobs:
+  send-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send message to Discord
+        run: |
+          MESSAGE="📢 **Mentor Jayvee AI Voice of the Day**
+
+          Protect capital first. Hindi kailangan laging may trade.
+          Wait for confirmation candles before entering."
+
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\": \"$MESSAGE\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
