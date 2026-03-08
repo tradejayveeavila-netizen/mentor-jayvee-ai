@@ -8,17 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check webhook exists
+      - name: Check webhook
         run: |
           if [ -z "${{ secrets.DISCORD_WEBHOOK }}" ]; then
             echo "DISCORD_WEBHOOK is empty"
             exit 1
-          else
-            echo "DISCORD_WEBHOOK is set"
           fi
+          echo "Webhook secret exists"
 
-      - name: Send message to Discord
+      - name: Send test message to Discord
         run: |
-          curl -i -H "Content-Type: application/json" \
-          -d '{"content":"Test message from GitHub Actions ✅"}' \
-          "${{ secrets.DISCORD_WEBHOOK }}"
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
+            -H "Content-Type: application/json" \
+            -d '{"content":"Test message from GitHub Actions ✅"}' \
+            "${{ secrets.DISCORD_WEBHOOK }}")
+
+          echo "HTTP_STATUS=$RESPONSE"
+          echo "Response body:"
+          cat response.txt
